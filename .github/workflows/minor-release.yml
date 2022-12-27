@@ -1,0 +1,31 @@
+name: Minor Release
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  create-minor-release:
+    if: github.event.pull_request.merged
+    name: Minor Release
+    runs-on: ubuntu-latest
+    needs: [test, build]
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Get previous tag
+        id: previoustag
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+      - name: Get next minor version
+        id: semvers
+        uses: "WyriHaximus/github-action-next-semvers@v1"
+        with:
+          version: ${{ steps.previoustag.outputs.tag }}
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.semvers.outputs.v_minor }}
+          name: ${{ steps.semvers.outputs.v_minor }}
+          generate_release_notes: true
