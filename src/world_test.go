@@ -7,7 +7,7 @@ import (
 
 func TestGetHelloFrom(t *testing.T) {
 	t.Run("returns wanted salutation", func(t *testing.T) {
-		want := "Hello Mars"
+		want := "Hello, Mars"
 		got := GetHelloFrom("Mars")
 
 		assert.Equal(t, want, got)
