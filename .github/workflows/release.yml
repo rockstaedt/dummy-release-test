@@ -31,6 +31,9 @@ jobs:
           any_of: bug,patch
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           allow_failure: true
+      - name: Set patch version
+        if: steps.bug_label_check.outputs.label_check == 'success'
+        run: echo "version="${{ steps.semvers.outputs.v_patch }} >> $GITHUB_OUTPUT
       - name: Check for feature/minor label
         id: feature_label_check
         uses: docker://agilepathway/pull-request-label-checker:latest
@@ -38,35 +41,22 @@ jobs:
           any_of: feature,minor
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           allow_failure: true
+      - name: Set minor version
+        if: steps.feature_label_check.outputs.label_check == 'success'
+        run: echo "version="${{ steps.semvers.outputs.v_minor }} >> $GITHUB_OUTPUT
+    outputs:
+      version: ${{ outputs.version }}
 
-  patch-release:
-    name: Create patch release
+
+  release:
+    name: Create release
     needs: preparation
-    if: preparation.steps.bug_label_check.outputs.label_check == 'success'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Create patch release
-        uses: softprops/action-gh-release@v1
+      - uses: actions/checkout@v3
+      - uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ needs.preparation.steps.semvers.outputs.v_patch }}
-          name: ${{ needs.preparation.steps.semvers.outputs.v_patch }}
-          generate_release_notes: true
-          token: ${{ secrets.MY_TOKEN }}
-
-  minor-release:
-    name: Create minor release
-    needs: preparation
-    if: needs.preparation.steps.feature_label_check.outputs.label_check == 'success'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Create patch release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ needs.preparation.steps.semvers.outputs.v_minor }}
-          name: ${{ needs.preparation.steps.semvers.outputs.v_minor }}
+          tag_name: ${{ needs.preparation.outputs.version }}
+          name: ${{ needs.preparation.outputs.version }}
           generate_release_notes: true
           token: ${{ secrets.MY_TOKEN }}
