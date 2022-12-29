@@ -3,11 +3,10 @@ on:
   pull_request:
     types:
       - closed
-      - labeled
 
 jobs:
   semantic-version:
-    # if: github.event.pull_request.merged
+    if: github.event.pull_request.merged
     name: Get next version numbers
     runs-on: ubuntu-latest
     steps:
