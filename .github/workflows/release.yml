@@ -60,7 +60,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: echo ${{ needs.determine-release.outputs.version }}
       - uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ needs.determine-release.outputs.version }}
