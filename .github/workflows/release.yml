@@ -33,6 +33,7 @@ jobs:
     name: Release type
     needs: semantic-version
     runs-on: ubuntu-latest
+    continue-on-error: true
     strategy:
       matrix:
         labels: ["bug,patch", "feature,minor"]
@@ -54,8 +55,6 @@ jobs:
         run: echo "version=${{ matrix.version }}" >> $GITHUB_OUTPUT
     outputs:
       version: ${{ steps.set_version.outputs.version }}
-
-
 
   release:
     name: Create release
