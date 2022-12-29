@@ -1,3 +1,4 @@
+name: Copy labels
 on:
   pull_request:
     types: [opened]
