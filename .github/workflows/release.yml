@@ -65,6 +65,6 @@ jobs:
       - uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ needs.determine-release.outputs.version }}
-          name: ${{ needs.preparation.outputs.version }}
+          name: ${{ needs.determine-release.outputs.version }}
           generate_release_notes: true
           token: ${{ secrets.MY_TOKEN }}
