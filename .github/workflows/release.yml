@@ -61,7 +61,7 @@ jobs:
 
   release:
     name: Create release
-    needs: preparation
+    needs: determine-release
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
