@@ -32,6 +32,7 @@ jobs:
   determine-release:
     name: Determine release type
     needs: semantic-version
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         labels: ["bug,patch", "feature,minor"]
