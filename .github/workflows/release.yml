@@ -30,7 +30,7 @@ jobs:
       v_minor: ${{ steps.semver.outputs.v_minor }}
 
   determine-release:
-    name: Determine release type
+    name: Release type
     needs: semantic-version
     runs-on: ubuntu-latest
     strategy:
@@ -53,7 +53,7 @@ jobs:
       - name: Set version
         id: set_version
         if: steps.label_check.outputs.label_check == 'success'
-        run: echo "version="${{ matrix.version }} >> $GITHUB_OUTPUT
+        run: echo "version=${{ matrix.version }}" >> $GITHUB_OUTPUT
     outputs:
       version: ${{ steps.set_version.version }}
 
@@ -65,6 +65,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - run: echo ${{ needs.preparation.outputs.version }}
       - uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ needs.preparation.outputs.version }}
