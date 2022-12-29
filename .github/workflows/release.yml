@@ -1,0 +1,72 @@
+name: Minor Release
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  preparation:
+    if: github.event.pull_request.merged
+    name: Prepare release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Get previous tag
+        id: previoustag
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+        with:
+          fallback: 0.0.1
+      - name: Get next minor version
+        id: semvers
+        uses: "WyriHaximus/github-action-next-semvers@v1"
+        with:
+          version: ${{ steps.previoustag.outputs.tag }}
+      - name: Check for bug/patch label
+        id: bug_label_check
+        uses: docker://agilepathway/pull-request-label-checker:latest
+        with:
+          any_of: bug,patch
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          allow_failure: true
+      - name: Check for feature/minor label
+        id: feature_label_check
+        uses: docker://agilepathway/pull-request-label-checker:latest
+        with:
+          any_of: feature,minor
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          allow_failure: true
+
+  patch-release:
+    name: Create patch release
+    needs: preparation
+    if: preparation.steps.bug_label_check.outputs.label_check == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Create patch release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ needs.preparation.steps.semvers.outputs.v_patch }}
+          name: ${{ needs.preparation.steps.semvers.outputs.v_patch }}
+          generate_release_notes: true
+          token: ${{ secrets.MY_TOKEN }}
+
+  minor-release:
+    name: Create minor release
+    needs: preparation
+    if: needs.preparation.steps.feature_label_check.outputs.label_check == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Create patch release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ needs.preparation.steps.semvers.outputs.v_minor }}
+          name: ${{ needs.preparation.steps.semvers.outputs.v_minor }}
+          generate_release_notes: true
+          token: ${{ secrets.MY_TOKEN }}
