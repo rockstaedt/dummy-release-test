@@ -1,4 +1,4 @@
-name: Minor Release
+name: Create release
 on:
   pull_request:
     types:
