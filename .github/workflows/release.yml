@@ -43,16 +43,14 @@ jobs:
           - labels: "feature,minor"
             version: "${{ needs.semantic-version.outputs.v_patch }}"
     steps:
-      - name: Check label
+      - name: Check labels
         uses: docker://agilepathway/pull-request-label-checker:latest
         id: label_check
         with:
           any_of: ${{ matrix.labels }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          allow_failure: true
       - name: Set version
         id: set_version
-        if: steps.label_check.outputs.label_check == 'success'
         run: echo "version=${{ matrix.version }}" >> $GITHUB_OUTPUT
     outputs:
       version: ${{ steps.set_version.outputs.version }}
