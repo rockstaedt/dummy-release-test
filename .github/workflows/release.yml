@@ -52,7 +52,6 @@ jobs:
       - name: Set version
         id: set_version
         run: echo "version=${{ matrix.version }}" >> $GITHUB_OUTPUT
-      - run: echo ${{ steps.set_version.outputs.version }}
     outputs:
       version: ${{ steps.set_version.outputs.version }}
 
@@ -62,10 +61,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: echo ${{ needs.preparation.outputs.version }}
+      - run: echo ${{ needs.determine-release.outputs.version }}
       - uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ needs.preparation.outputs.version }}
+          tag_name: ${{ needs.determine-release.outputs.version }}
           name: ${{ needs.preparation.outputs.version }}
           generate_release_notes: true
           token: ${{ secrets.MY_TOKEN }}
