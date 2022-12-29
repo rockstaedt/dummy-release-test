@@ -55,7 +55,7 @@ jobs:
         if: steps.label_check.outputs.label_check == 'success'
         run: echo "version=${{ matrix.version }}" >> $GITHUB_OUTPUT
     outputs:
-      version: ${{ steps.set_version.version }}
+      version: ${{ steps.set_version.outputs.version }}
 
 
 
