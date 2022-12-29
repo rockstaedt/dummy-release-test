@@ -37,11 +37,11 @@ jobs:
       matrix:
         labels: ["bug,patch", "feature,minor"]
         version: ["${{ needs.semantic-version.outputs.v_patch }}", "${{ needs.semantic-version.outputs.v_minor }}"]
-      exclude:
-        - labels: "bug,patch"
-          version: "${{ needs.semantic-version.outputs.v_minor }}"
-        - labels: "feature,minor"
-          version: "${{ needs.semantic-version.outputs.v_patch }}"
+        exclude:
+          - labels: "bug,patch"
+            version: "${{ needs.semantic-version.outputs.v_minor }}"
+          - labels: "feature,minor"
+            version: "${{ needs.semantic-version.outputs.v_patch }}"
     steps:
       - name: Check label
         uses: docker://agilepathway/pull-request-label-checker:latest
