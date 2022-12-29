@@ -3,10 +3,11 @@ on:
   pull_request:
     types:
       - closed
+      - labeled
 
 jobs:
   preparation:
-    if: github.event.pull_request.merged
+    # if: github.event.pull_request.merged
     name: Prepare release
     runs-on: ubuntu-latest
     steps:
